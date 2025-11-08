@@ -16,4 +16,22 @@ const ciudadEliminada = async (city) => {
   return eliminada;
 };
 
-module.exports = { ciudadEncontrarClima, ciudadEliminada };
+// CREATE - Crear nueva ciudad
+const ciudadCreada = async (nuevaCiudad) => {
+  const existe = ciudades.find((c) => c.ciudad.toLowerCase() === nuevaCiudad.ciudad.toLowerCase());
+  if (existe) return null;
+  
+  ciudades.push(nuevaCiudad);
+  return nuevaCiudad;
+};
+
+// UPDATE - Actualizar datos de ciudad existente
+const ciudadActualizada = async (city, datosActualizados) => {
+  const index = ciudades.findIndex((c) => c.ciudad.toLowerCase() === city.toLowerCase());
+  if (index === -1) return null;
+  
+  ciudades[index] = { ...ciudades[index], ...datosActualizados };
+  return ciudades[index];
+};
+
+module.exports = { ciudadEncontrarClima, ciudadEliminada, ciudadCreada, ciudadActualizada };
