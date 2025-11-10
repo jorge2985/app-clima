@@ -1,0 +1,30 @@
+### Lista todas las ciudades
+GET http://localhost:3000/api/clima
+Accept: application/json
+
+### Obtener clima de una ciudad
+GET http://localhost:3000/api/clima/Mar%20del%20Plata
+Accept: application/json
+
+### Crear nueva ciudad
+POST http://localhost:3000/api/clima
+Content-Type: application/json
+
+{
+  "ciudad": "Mar del Plata",
+  "temp": 20,
+  "viento": 15
+}
+
+### Actualizar ciudad (ejemplo: cambiar temp)
+PUT http://localhost:3000/api/clima/Mar%20del%20Plata
+Content-Type: application/json
+
+{
+  "temp": 25,
+  "viento": 10
+}
+
+### Eliminar ciudad
+DELETE http://localhost:3000/api/clima/Mar%20del%20Plata
+Accept: application/json
