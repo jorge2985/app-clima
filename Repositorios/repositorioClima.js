@@ -96,21 +96,31 @@ const ciudadActualizada = async (city, datosActualizados, db) => {
     const nuevoViento = datosActualizados.viento ?? found.viento;
 
     // ejecutar SP de modificación
-    await db.request()
+    const result = await db.request()
       .input('ciudad_id', found.id)
       .input('ciudad_nombre', nuevoNombre)
       .input('ciudad_temperatura', nuevaTemp)
       .input('ciudad_viento', nuevoViento)
       .execute('ciudades_MODIFICACION');
 
+    // validar que se modificó alguna una fila
+
+    if (result.rowsAffected[0] == 0) {
+      throw new Error('Error en la modificación: no se encontraron registros para actualizar');
+    }
+
     // traer registro actualizado mediante SP ciudades_TRAER_UNO
     const res = await db.request()
       .input('ciudad_id', found.id)
       .execute('ciudades_TRAER_UNO');
 
+
+
     const row = res.recordset && res.recordset[0];
     return row ? mapRowToCiudad(row) : { id: found.id, ciudad: nuevoNombre, temp: Number(nuevaTemp), viento: nuevoViento };
   }
+
+
 
   // fallback memoria
   const index = ciudades.findIndex((c) => c.ciudad.toLowerCase() === city.toLowerCase());
