@@ -24,6 +24,11 @@ router.get('/', async (req, res) => {
 router.get('/:city', async (req, res) => {
   const db = req.app.locals.db;
   const city = decodeURIComponent(req.params.city);
+
+  if (city.ciudad !== undefined && (typeof city.ciudad !== 'string' || city.ciudad.trim().length === 0)) {
+    return res.status(400).json({ error: 'Ciudad debe ser un string no vacío' });
+  }
+
   try {
     const item = await servicio.obtenerDatosClima(city, db);
     if (!item) return res.status(404).json({ error: 'Ciudad no encontrada' });
@@ -38,6 +43,18 @@ router.get('/:city', async (req, res) => {
 router.post('/', async (req, res) => {
   const db = req.app.locals.db;
   const nueva = req.body;
+
+  // Validación de tipos de datos
+  if (nueva.temp !== undefined && (typeof nueva.temp !== 'number' || isNaN(nueva.temp))) {
+    return res.status(400).json({ error: 'Temperatura debe ser un número válido' });
+  }
+  if (nueva.viento !== undefined && (typeof nueva.viento !== 'number' || isNaN(nueva.viento))) {
+    return res.status(400).json({ error: 'Viento debe ser un número válido' });
+  }
+  if (nueva.ciudad !== undefined && (typeof nueva.ciudad !== 'string' || nueva.ciudad.trim().length === 0)) {
+    return res.status(400).json({ error: 'Ciudad debe ser un string no vacío' });
+  }
+
   try {
     const created = await servicio.crearCiudad(nueva, db);
     res.status(201).json(created);
@@ -49,6 +66,8 @@ router.post('/', async (req, res) => {
     res.status(500).json({ error: msg });
   }
 });
+
+
 
 // Actualizar ciudad por nombre
 router.put('/:city', async (req, res) => {
@@ -82,6 +101,11 @@ router.put('/:city', async (req, res) => {
 router.delete('/:city', async (req, res) => {
   const db = req.app.locals.db;
   const city = decodeURIComponent(req.params.city);
+
+  if (city.ciudad !== undefined && (typeof city.ciudad !== 'string' || city.ciudad.trim().length === 0)) {
+    return res.status(400).json({ error: 'Ciudad debe ser un string no vacío' });
+  }
+
   try {
     const deleted = await servicio.eliminarCiudad(city, db);
     res.json(deleted);

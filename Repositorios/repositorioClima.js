@@ -69,6 +69,13 @@ const ciudadCreada = async (nuevaCiudad, db) => {
       .input('ciudad_viento', viento)
       .execute('ciudades_ALTA');
 
+    // Verificar si se insertó correctamente
+    const newId = result.recordset[0]?.ciudad_id;
+
+    if (!newId) {
+      throw new Error('Error en la Creación de la ciudad: ' + nombre); // ya existe o error
+    }
+
     // SP selecciona SCOPE_IDENTITY() AS ciudad_id
     const id = result.recordset && result.recordset[0] ? result.recordset[0].ciudad_id : null;
     return { id, ciudad: nombre, temp: Number(temp), viento };

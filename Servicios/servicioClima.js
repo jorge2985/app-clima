@@ -31,6 +31,8 @@ const crearCiudad = async (datosClima, db) => {
         throw new Error("Faltan datos requeridos: ciudad, temp, viento");
     }
 
+    if (obtenerDatosClima(ciudad, db)) throw new Error("La ciudad ya existe")
+
     const nuevaCiudad = await ciudadCreada({ ciudad, temp, viento }, db);
     if (!nuevaCiudad) throw new Error("La ciudad ya existe");
     return nuevaCiudad;
