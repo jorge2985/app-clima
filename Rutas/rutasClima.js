@@ -55,6 +55,18 @@ router.put('/:city', async (req, res) => {
   const db = req.app.locals.db;
   const city = decodeURIComponent(req.params.city);
   const datos = req.body;
+
+  // Validación de tipos de datos
+  if (datos.temp !== undefined && (typeof datos.temp !== 'number' || isNaN(datos.temp))) {
+    return res.status(400).json({ error: 'Temperatura debe ser un número válido' });
+  }
+  if (datos.viento !== undefined && (typeof datos.viento !== 'number' || isNaN(datos.viento))) {
+    return res.status(400).json({ error: 'Viento debe ser un número válido' });
+  }
+  if (datos.ciudad !== undefined && (typeof datos.ciudad !== 'string' || datos.ciudad.trim().length === 0)) {
+    return res.status(400).json({ error: 'Ciudad debe ser un string no vacío' });
+  }
+
   try {
     const updated = await servicio.actualizarCiudad(city, datos, db);
     res.json(updated);

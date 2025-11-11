@@ -1,14 +1,14 @@
 const {
-  ciudadTraerLista,
-  ciudadEncontrarClima,
-  ciudadEliminada,
-  ciudadCreada,
-  ciudadActualizada
+    ciudadTraerLista,
+    ciudadEncontrarClima,
+    ciudadEliminada,
+    ciudadCreada,
+    ciudadActualizada
 } = require('../Repositorios/repositorioClima.js');
 
 // Listar todas las ciudades (pasa db al repo)
 const listarCiudades = async (db) => {
-  return await ciudadTraerLista(db);
+    return await ciudadTraerLista(db);
 }
 
 // Retornamos las funciones con los nombres que usa el controlador
@@ -17,7 +17,7 @@ const obtenerDatosClima = async (ciudad, db) => {
     if (!clima) throw new Error("Ciudad no encontrada");
     return clima;
 }
-
+// DELETE - Eliminar ciudad por nombre
 const eliminarCiudad = async (ciudad, db) => {
     const eliminada = await ciudadEliminada(ciudad, db);
     if (!eliminada) throw new Error("No existe la ciudad en el historial");
@@ -30,7 +30,7 @@ const crearCiudad = async (datosClima, db) => {
     if (!ciudad || temp === undefined || viento === undefined) {
         throw new Error("Faltan datos requeridos: ciudad, temp, viento");
     }
-    
+
     const nuevaCiudad = await ciudadCreada({ ciudad, temp, viento }, db);
     if (!nuevaCiudad) throw new Error("La ciudad ya existe");
     return nuevaCiudad;
