@@ -1,9 +1,3 @@
-const ciudades = [
-  { ciudad: "Buenos Aires", temp: 25, viento: 18 },
-  { ciudad: "Córdoba", temp: 22, viento: 12 },
-  { ciudad: "Rosario", temp: 28, viento: 10 },
-];
-
 // Helper: map recordset row -> objeto ciudad
 const mapRowToCiudad = (row) => ({
   id: row.ciudad_id,
@@ -26,7 +20,7 @@ const ciudadTraerLista = async (db) => {
   return ciudades.map((c, idx) => ({ id: undefined, ciudad: c.ciudad, temp: c.temp, viento: c.viento }));
 };
 
-// FIND by city name
+// Busca la ciudad por nombre
 const ciudadEncontrarClima = async (city, db) => {
   if (db) {
     const lista = await traerListaDesdeDB(db);
@@ -37,7 +31,7 @@ const ciudadEncontrarClima = async (city, db) => {
   return ciudades.find((c) => c.ciudad.toLowerCase() === city.toLowerCase()) || null;
 };
 
-// DELETE by city name
+// Borrar ciudad por nombre
 const ciudadEliminada = async (city, db) => {
   if (db) {
     const lista = await traerListaDesdeDB(db);
@@ -59,7 +53,7 @@ const ciudadEliminada = async (city, db) => {
   return eliminada;
 };
 
-// CREATE - Crear nueva ciudad
+// Crear nueva ciudad
 const ciudadCreada = async (nuevaCiudad, db) => {
   if (db) {
     const { ciudad: nombre, temp, viento } = nuevaCiudad;
@@ -103,31 +97,24 @@ const ciudadActualizada = async (city, datosActualizados, db) => {
     const nuevoViento = datosActualizados.viento ?? found.viento;
 
     // ejecutar SP de modificación
-    const result = await db.request()
+    await db.request()
       .input('ciudad_id', found.id)
       .input('ciudad_nombre', nuevoNombre)
       .input('ciudad_temperatura', nuevaTemp)
       .input('ciudad_viento', nuevoViento)
       .execute('ciudades_MODIFICACION');
 
-    // validar que se modificó alguna una fila
-
-    if (result.rowsAffected[0] == 0) {
-      throw new Error('Error en la modificación: no se encontraron registros para actualizar');
-    }
+    // verificar si se actualizó correctamente
+    
 
     // traer registro actualizado mediante SP ciudades_TRAER_UNO
     const res = await db.request()
       .input('ciudad_id', found.id)
       .execute('ciudades_TRAER_UNO');
 
-
-
     const row = res.recordset && res.recordset[0];
     return row ? mapRowToCiudad(row) : { id: found.id, ciudad: nuevoNombre, temp: Number(nuevaTemp), viento: nuevoViento };
   }
-
-
 
   // fallback memoria
   const index = ciudades.findIndex((c) => c.ciudad.toLowerCase() === city.toLowerCase());

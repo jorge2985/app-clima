@@ -11,9 +11,9 @@ POST http://localhost:3000/api/clima
 Content-Type: application/json
 
 {
-  "ciudad": "Mar del Plata",
+  "ciudad": "Salta",
   "temp": 20,
-  "viento": 15
+  "viento": 45
 }
 
 ### Actualizar ciudad (ejemplo: cambiar temp)
