@@ -4,6 +4,8 @@
   "description": "",
   "main": "index_server.js",
   "scripts": {
+    "start": "node index_server.js",
+    "dev": "nodemon index_server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
