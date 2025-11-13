@@ -83,11 +83,11 @@ app-clima/
 }
 ```
 
-### 3. POST /
+### 3. POST /crear
 **Descripción:** Crea una nueva ciudad con sus datos climáticos
 
 **Método:** POST  
-**URL:** `/api/clima/`  
+**URL:** `/api/clima/crear`  
 **Body (JSON):**
 ```json
 {
@@ -126,11 +126,11 @@ app-clima/
 }
 ```
 
-### 4. PUT /:ciudad
+### 4. PUT /actualizar/:ciudad
 **Descripción:** Actualiza los datos climáticos de una ciudad existente
 
 **Método:** PUT  
-**URL:** `/api/clima/:ciudad`  
+**URL:** `/api/clima/actualizar/:ciudad`  
 **Parámetros:**
 - `ciudad` (string): Nombre de la ciudad a actualizar (soporta URL encoding)
 
@@ -173,11 +173,11 @@ app-clima/
 }
 ```
 
-### 5. DELETE /:ciudad
+### 5. DELETE /eliminar/:ciudad
 **Descripción:** Elimina una ciudad del historial climático
 
 **Método:** DELETE  
-**URL:** `/api/clima/:ciudad`  
+**URL:** `/api/clima/eliminar/:ciudad`  
 **Parámetros:**
 - `ciudad` (string): Nombre de la ciudad a eliminar (soporta URL encoding)
 
@@ -207,7 +207,7 @@ app-clima/
   - Manejo de errores HTTP específicos
   - Validación de tipos de datos en PUT
   - Decodificación URL para parámetros
-- **Endpoints:** GET /, GET /:city, POST /, PUT /:city, DELETE /:city
+- **Endpoints:** GET /, GET /:city, POST /crear, PUT /actualizar/:city, DELETE /eliminar/:city
 
 ### Servicios (servicioClima.js)
 - **Responsabilidad:** Lógica de negocio y validaciones
@@ -356,21 +356,21 @@ curl http://localhost:3000/api/clima/Buenos%20Aires
 
 ### Crear nueva ciudad
 ```bash
-curl -X POST http://localhost:3000/api/clima \
+curl -X POST http://localhost:3000/api/clima/crear \
   -H "Content-Type: application/json" \
   -d '{"ciudad":"Salta","temp":18,"viento":12}'
 ```
 
 ### Actualizar ciudad (parcial)
 ```bash
-curl -X PUT http://localhost:3000/api/clima/Salta \
+curl -X PUT http://localhost:3000/api/clima/actualizar/Salta \
   -H "Content-Type: application/json" \
   -d '{"temp":22}'
 ```
 
 ### Eliminar ciudad
 ```bash
-curl -X DELETE http://localhost:3000/api/clima/Salta
+curl -X DELETE http://localhost:3000/api/clima/eliminar/Salta
 ```
 
 ## Características Avanzadas
@@ -419,17 +419,17 @@ GET http://localhost:3000/api/clima
 GET http://localhost:3000/api/clima/Mar%20del%20Plata
 
 ### Crear nueva ciudad
-POST http://localhost:3000/api/clima
+POST http://localhost:3000/api/clima/crear
 Content-Type: application/json
 
 {
-  "ciudad": "Salta",
+  "ciudad": "San Francisco",
   "temp": 20,
   "viento": 45
 }
 
 ### Actualizar ciudad
-PUT http://localhost:3000/api/clima/Mar%20del%20Plata
+PUT http://localhost:3000/api/clima/actualizar/Avellaneda
 Content-Type: application/json
 
 {
@@ -438,5 +438,5 @@ Content-Type: application/json
 }
 
 ### Eliminar ciudad
-DELETE http://localhost:3000/api/clima/Mar%20del%20Plata
+DELETE http://localhost:3000/api/clima/eliminar/Mar%20del%20Plata
 ```

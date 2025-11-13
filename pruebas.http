@@ -11,7 +11,7 @@ POST http://localhost:3000/api/clima/crear
 Content-Type: application/json
 
 {
-  "ciudad": "Avellaneda",
+  "ciudad": "San Francisco",
   "temp": 20,
   "viento": 45
 }
