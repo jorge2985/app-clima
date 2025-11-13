@@ -269,25 +269,6 @@ const mapRowToCiudad = (row) => ({
 });
 ```
 
-### Fallback en Memoria
-Cuando la BD no está disponible, usa array estático con compatibilidad:
-```javascript
-// Datos base en memoria
-const ciudades = [
-  { ciudad: "Buenos Aires", temp: 25, viento: 18 },
-  { ciudad: "Córdoba", temp: 22, viento: 12 },
-  { ciudad: "Rosario", temp: 28, viento: 10 }
-];
-
-// Mapeo para compatibilidad (id: undefined)
-return ciudades.map((c, idx) => ({ 
-  id: undefined, 
-  ciudad: c.ciudad, 
-  temp: c.temp, 
-  viento: c.viento 
-}));
-```
-
 ## Validaciones Implementadas
 
 ### CREATE (POST)
@@ -338,6 +319,7 @@ node index_server.js
 - **express:** ^5.1.0 - Framework web
 - **mssql:** ^12.1.0 - Driver SQL Server con pool de conexiones
 - **node:** ^25.1.0 - Runtime de Node.js
+- **dotenv:** ^17.2.3
 
 ### Dependencias de Desarrollo
 - **nodemon:** ^3.1.11 - Auto-reload durante desarrollo
