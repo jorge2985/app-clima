@@ -26,5 +26,5 @@ Content-Type: application/json
 }
 
 ### Eliminar ciudad
-DELETE http://localhost:3000/api/clima/Mar%20del%20Plata
+DELETE http://localhost:3000/api/clima/eliminar/Mar%20del%20Plata
 Accept: application/json

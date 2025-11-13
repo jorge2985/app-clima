@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const servicio = require('../Servicios/servicioClima');
+const controlador = require('../Controladores/controladorClima');
 
 // Log middleware ligero para debug
 router.use((req, res, next) => {
@@ -9,112 +9,18 @@ router.use((req, res, next) => {
 });
 
 // Lista todas las ciudades
-router.get('/', async (req, res) => {
-  const db = req.app.locals.db;
-  try {
-    const lista = await servicio.listarCiudades(db);
-    res.json(lista);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error al obtener la lista de ciudades' });
-  }
-});
+router.get('/', controlador.listarClima);
 
 // Obtener clima por nombre de ciudad
-router.get('/:city', async (req, res) => {
-  const db = req.app.locals.db;
-  const city = decodeURIComponent(req.params.city);
-
-  if (city.ciudad !== undefined && (typeof city.ciudad !== 'string' || city.ciudad.trim().length === 0)) {
-    return res.status(400).json({ error: 'Ciudad debe ser un string no vacío' });
-  }
-
-  try {
-    const item = await servicio.obtenerDatosClima(city, db);
-    if (!item) return res.status(404).json({ error: 'Ciudad no encontrada' });
-    res.json(item);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message || 'Error al buscar la ciudad' });
-  }
-});
+router.get('/:city', controlador.obtenerClima);
 
 // Crear nueva ciudad
-router.post('/', async (req, res) => {
-  const db = req.app.locals.db;
-  const nueva = req.body;
-
-  // Validación de tipos de datos
-  if (nueva.temp !== undefined && (typeof nueva.temp !== 'number' || isNaN(nueva.temp))) {
-    return res.status(400).json({ error: 'Temperatura debe ser un número válido' });
-  }
-  if (nueva.viento !== undefined && (typeof nueva.viento !== 'number' || isNaN(nueva.viento))) {
-    return res.status(400).json({ error: 'Viento debe ser un número válido' });
-  }
-  if (nueva.ciudad !== undefined && (typeof nueva.ciudad !== 'string' || nueva.ciudad.trim().length === 0)) {
-    return res.status(400).json({ error: 'Ciudad debe ser un string no vacío' });
-  }
-
-  try {
-    const created = await servicio.crearCiudad(nueva, db);
-    res.status(201).json(created);
-  } catch (err) {
-    console.error(err);
-    const msg = err.message || 'Error al crear la ciudad';
-    if (msg.includes('Faltan datos')) return res.status(400).json({ error: msg });
-    if (msg.includes('ya existe')) return res.status(409).json({ error: msg });
-    res.status(500).json({ error: msg });
-  }
-});
-
-
+router.post('/crear', controlador.nuevaCiudad);
 
 // Actualizar ciudad por nombre
-router.put('/:city', async (req, res) => {
-  const db = req.app.locals.db;
-  const city = decodeURIComponent(req.params.city);
-  const datos = req.body;
-
-  // Validación de tipos de datos
-  if (datos.temp !== undefined && (typeof datos.temp !== 'number' || isNaN(datos.temp))) {
-    return res.status(400).json({ error: 'Temperatura debe ser un número válido' });
-  }
-  if (datos.viento !== undefined && (typeof datos.viento !== 'number' || isNaN(datos.viento))) {
-    return res.status(400).json({ error: 'Viento debe ser un número válido' });
-  }
-  if (datos.ciudad !== undefined && (typeof datos.ciudad !== 'string' || datos.ciudad.trim().length === 0)) {
-    return res.status(400).json({ error: 'Ciudad debe ser un string no vacío' });
-  }
-
-  try {
-    const updated = await servicio.actualizarCiudad(city, datos, db);
-    res.json(updated);
-  } catch (err) {
-    console.error(err);
-    const msg = err.message || 'Error al actualizar la ciudad';
-    if (msg.includes('no encontrada')) return res.status(404).json({ error: msg });
-    res.status(500).json({ error: msg });
-  }
-});
+router.put('/actualizar/:city', controlador.actualizarClima);
 
 // Eliminar ciudad por nombre
-router.delete('/:city', async (req, res) => {
-  const db = req.app.locals.db;
-  const city = decodeURIComponent(req.params.city);
-
-  if (city.ciudad !== undefined && (typeof city.ciudad !== 'string' || city.ciudad.trim().length === 0)) {
-    return res.status(400).json({ error: 'Ciudad debe ser un string no vacío' });
-  }
-
-  try {
-    const deleted = await servicio.eliminarCiudad(city, db);
-    res.json(deleted);
-  } catch (err) {
-    console.error(err);
-    const msg = err.message || 'Error al eliminar la ciudad';
-    if (msg.includes('No existe')) return res.status(404).json({ error: msg });
-    res.status(500).json({ error: msg });
-  }
-});
+router.delete('/eliminar/:city', controlador.borrarCiudad);
 
 module.exports = router;

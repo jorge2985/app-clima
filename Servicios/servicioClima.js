@@ -6,6 +6,18 @@ const {
     ciudadActualizada
 } = require('../Repositorios/repositorioClima.js');
 
+// Listar todas las ciudades (pasa db al repo)
+const listarCiudades = async (db) => {
+    return await ciudadTraerLista(db);
+}
+
+// Retornamos las funciones con los nombres que usa el controlador
+const obtenerDatosClima = async (ciudad, db) => {
+    const clima = await ciudadEncontrarClima(ciudad, db);
+    if (!clima) throw new Error("Ciudad no encontrada");
+    return clima;
+}
+
 // CREATE - Crear nueva ciudad
 const crearCiudad = async (datosClima, db) => {
     const { ciudad, temp, viento } = datosClima;
@@ -31,18 +43,6 @@ const eliminarCiudad = async (ciudad, db) => {
     const eliminada = await ciudadEliminada(ciudad, db);
     if (!eliminada) throw new Error("No existe la ciudad en el historial");
     return eliminada;
-}
-
-// Listar todas las ciudades (pasa db al repo)
-const listarCiudades = async (db) => {
-    return await ciudadTraerLista(db);
-}
-
-// Retornamos las funciones con los nombres que usa el controlador
-const obtenerDatosClima = async (ciudad, db) => {
-    const clima = await ciudadEncontrarClima(ciudad, db);
-    if (!clima) throw new Error("Ciudad no encontrada");
-    return clima;
 }
 
 module.exports = { listarCiudades, obtenerDatosClima, eliminarCiudad, crearCiudad, actualizarCiudad };

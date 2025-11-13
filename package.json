@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/jorge2985/app-clima#readme",
   "dependencies": {
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "mssql": "^12.1.0",
     "node": "^25.1.0"

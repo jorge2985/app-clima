@@ -16,8 +16,6 @@ const traerListaDesdeDB = async (db) => {
 // Public: traer lista (usa BD si se pasa, si no fallback memoria)
 const ciudadTraerLista = async (db) => {
   if (db) return await traerListaDesdeDB(db);
-  // map al formato con id undefined para compatibilidad
-  return ciudades.map((c, idx) => ({ id: undefined, ciudad: c.ciudad, temp: c.temp, viento: c.viento }));
 };
 
 // Busca la ciudad por nombre
@@ -26,31 +24,6 @@ const ciudadEncontrarClima = async (city, db) => {
     const lista = await traerListaDesdeDB(db);
     return lista.find((c) => c.ciudad.toLowerCase() === city.toLowerCase()) || null;
   }
-
-  // fallback memoria
-  return ciudades.find((c) => c.ciudad.toLowerCase() === city.toLowerCase()) || null;
-};
-
-// Borrar ciudad por nombre
-const ciudadEliminada = async (city, db) => {
-  if (db) {
-    const lista = await traerListaDesdeDB(db);
-    const found = lista.find((c) => c.ciudad.toLowerCase() === city.toLowerCase());
-    if (!found) return null;
-
-    await db.request()
-      .input('ciudad_id', found.id)
-      .execute('ciudades_BAJA');
-
-    return found; // devolver objeto eliminado
-  }
-
-  // fallback memoria
-  const index = ciudades.findIndex((c) => c.ciudad.toLowerCase() === city.toLowerCase());
-  if (index === -1) return null;
-
-  const eliminada = ciudades.splice(index, 1)[0];
-  return eliminada;
 };
 
 // Crear nueva ciudad
@@ -74,13 +47,6 @@ const ciudadCreada = async (nuevaCiudad, db) => {
     const id = result.recordset && result.recordset[0] ? result.recordset[0].ciudad_id : null;
     return { id, ciudad: nombre, temp: Number(temp), viento };
   }
-
-  // fallback memoria
-  const existe = ciudades.find((c) => c.ciudad.toLowerCase() === nuevaCiudad.ciudad.toLowerCase());
-  if (existe) return null;
-
-  ciudades.push(nuevaCiudad);
-  return nuevaCiudad;
 };
 
 // UPDATE - Actualizar datos de ciudad existente (busca por nombre si se pasa nombre)
@@ -104,9 +70,6 @@ const ciudadActualizada = async (city, datosActualizados, db) => {
       .input('ciudad_viento', nuevoViento)
       .execute('ciudades_MODIFICACION');
 
-    // verificar si se actualizó correctamente
-    
-
     // traer registro actualizado mediante SP ciudades_TRAER_UNO
     const res = await db.request()
       .input('ciudad_id', found.id)
@@ -115,13 +78,21 @@ const ciudadActualizada = async (city, datosActualizados, db) => {
     const row = res.recordset && res.recordset[0];
     return row ? mapRowToCiudad(row) : { id: found.id, ciudad: nuevoNombre, temp: Number(nuevaTemp), viento: nuevoViento };
   }
+};
 
-  // fallback memoria
-  const index = ciudades.findIndex((c) => c.ciudad.toLowerCase() === city.toLowerCase());
-  if (index === -1) return null;
+// Borrar ciudad por nombre
+const ciudadEliminada = async (city, db) => {
+  if (db) {
+    const lista = await traerListaDesdeDB(db);
+    const found = lista.find((c) => c.ciudad.toLowerCase() === city.toLowerCase());
+    if (!found) return null;
 
-  ciudades[index] = { ...ciudades[index], ...datosActualizados };
-  return ciudades[index];
+    await db.request()
+      .input('ciudad_id', found.id)
+      .execute('ciudades_BAJA');
+
+    return found; // devolver objeto eliminado
+  }
 };
 
 module.exports = { ciudadTraerLista, ciudadEncontrarClima, ciudadEliminada, ciudadCreada, ciudadActualizada };
