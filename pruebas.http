@@ -7,17 +7,17 @@ GET http://localhost:3000/api/clima/Mar%20del%20Plata
 Accept: application/json
 
 ### Crear nueva ciudad
-POST http://localhost:3000/api/clima
+POST http://localhost:3000/api/clima/crear
 Content-Type: application/json
 
 {
-  "ciudad": "Salta",
+  "ciudad": "Avellaneda",
   "temp": 20,
   "viento": 45
 }
 
 ### Actualizar ciudad (ejemplo: cambiar temp)
-PUT http://localhost:3000/api/clima/Mar%20del%20Plata
+PUT http://localhost:3000/api/clima/actualizar/Avellaneda
 Content-Type: application/json
 
 {

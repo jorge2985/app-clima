@@ -11,16 +11,16 @@ router.use((req, res, next) => {
 // Lista todas las ciudades
 router.get('/', controlador.listarClima);
 
-// Obtener clima por nombre de ciudad
-router.get('/:city', controlador.obtenerClima);
-
-// Crear nueva ciudad
+// Crear nueva ciudad (ANTES de la ruta con parámetro)
 router.post('/crear', controlador.nuevaCiudad);
 
-// Actualizar ciudad por nombre
+// Actualizar ciudad por nombre (ANTES de la ruta con parámetro)
 router.put('/actualizar/:city', controlador.actualizarClima);
 
-// Eliminar ciudad por nombre
+// Eliminar ciudad por nombre (ANTES de la ruta con parámetro)
 router.delete('/eliminar/:city', controlador.borrarCiudad);
+
+// Obtener clima por nombre de ciudad (AL FINAL - ruta genérica con parámetro)
+router.get('/:city', controlador.obtenerClima);
 
 module.exports = router;
