@@ -66,17 +66,16 @@ app.delete('/api/clima/eliminar/:city', async (req, res) => {
 app.use("/api/clima", climaRutas);
 
 // Iniciar servidor inmediatamente (para que REST client no reciba connection refused)
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
   // Intentar conectar la BD en background (no abortar si falla)
   const pool = new sql.ConnectionPool(dbConfig);
-  pool.connect()
-    .then(() => {
-      app.locals.db = pool;
-      console.log('Conexión a la base de datos establecida y pool guardado en app.locals.db');
-    })
-    .catch(err => {
-      console.error('No se pudo conectar a la base de datos. Usando fallback en memoria. Error:', err && err.message ? err.message : err);
-      // no exit -> permitimos usar el arreglo en memoria y seguir respondiendo
-    });
+  try {
+    await pool.connect();
+    app.locals.db = pool;
+    console.log('Conexión a la base de datos establecida y pool guardado en app.locals.db');
+  } catch (err) {
+    console.error('No se pudo conectar a la base de datos. Usando fallback en memoria. Error:', err && err.message ? err.message : err);
+    // no exit -> permitimos usar el arreglo en memoria y seguir respondiendo
+  }
 });
